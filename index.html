@@ -30,26 +30,20 @@
         <h1 id="hero-title" class="hero__title">Lochan Mahesh</h1>
         <p class="hero__subtitle">Cybersecurity Student</p>
 
-        <p class="hero__details">
-          <span>+91 8660849091</span>
-          <span>m.lochan11@hotmail.com</span>
-          <a href="https://github.com/lochan-m05" target="_blank" rel="noopener">GitHub</a>
-          <a href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
-          <span>Bengaluru, Karnataka</span>
-        </p>
+        
 
         <ul class="skills" aria-label="Skills">
-          <li>Python</li>
-          <li>C/C++</li>
-          <li>SQL</li>
-          <li>Nessus</li>
-          <li>Burp Suite</li>
-          <li>OWASP ZAP</li>
-          <li>Nmap</li>
-          <li>Network Security</li>
-          <li>Docker</li>
-          <li>Git</li>
-          <li>Rust (learning)</li>
+          <li><span aria-hidden="true">🐍</span><span>Python</span></li>
+          <li><span aria-hidden="true">🧩</span><span>C/C++</span></li>
+          <li><span aria-hidden="true">🗄️</span><span>SQL</span></li>
+          <li><span aria-hidden="true">🛡️</span><span>Nessus</span></li>
+          <li><span aria-hidden="true">🧪</span><span>Burp Suite</span></li>
+          <li><span aria-hidden="true">⚡</span><span>OWASP ZAP</span></li>
+          <li><span aria-hidden="true">📡</span><span>Nmap</span></li>
+          <li><span aria-hidden="true">🔐</span><span>Network Security</span></li>
+          <li><span aria-hidden="true">🐳</span><span>Docker</span></li>
+          <li><span aria-hidden="true">🧰</span><span>Git</span></li>
+          <li><span aria-hidden="true">🦀</span><span>Rust (learning)</span></li>
         </ul>
 
         <p class="intro">
@@ -114,8 +108,10 @@
       function renderRepos(repos) {
         const grid = document.getElementById('repo-grid');
         grid.innerHTML = '';
+        const VISIBLE_COUNT = 5;
         repos
           .sort((a,b) => new Date(b.updated_at) - new Date(a.updated_at))
+          .slice(0, VISIBLE_COUNT)
           .forEach(repo => {
             const article = document.createElement('article');
             article.className = 'card';
@@ -138,6 +134,21 @@
         try {
           const repos = await fetchAllRepos(username);
           renderRepos(repos);
+          // Ghost cards for remaining repos: show names faded with top/bottom gradient
+          const hidden = repos
+            .sort((a,b) => new Date(b.updated_at) - new Date(a.updated_at))
+            .slice(VISIBLE_COUNT, VISIBLE_COUNT + 4);
+          const grid = document.getElementById('repo-grid');
+          hidden.forEach(repo => {
+            const ghost = document.createElement('article');
+            ghost.className = 'card card--ghost';
+            ghost.innerHTML = `
+              <h3 class="card__title">${repo.name}</h3>
+              <p class="card__desc">${repo.description ? repo.description : '—'}</p>
+              <div class="card__meta"><span>${repo.language || '—'}</span><span>Updated ${formatDate(repo.updated_at)}</span></div>
+            `;
+            grid.appendChild(ghost);
+          });
           document.getElementById('repo-help').textContent = '';
         } catch (e) {
           document.getElementById('repo-help').textContent = 'Failed to load repositories. Try again later.';
