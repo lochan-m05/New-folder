@@ -68,10 +68,13 @@ body {
 /* Faded placeholders to suggest more repos */
 .card--ghost {
   position: relative;
-  opacity: .45;
-  filter: blur(0.2px) saturate(85%);
-  border-style: dashed;
+  opacity: .30;
+  filter: blur(0.6px) saturate(80%);
+  border-style: dotted;
 }
+.card--ghost .card__title,
+.card--ghost .card__desc,
+.card--ghost .card__meta { color: var(--muted); }
 .card--ghost:before,
 .card--ghost:after {
   content: "";
@@ -82,11 +85,11 @@ body {
 }
 .card--ghost:before {
   top: -1px;
-  background: linear-gradient(to bottom, rgba(255,255,255,0.95), rgba(255,255,255,0));
+  background: linear-gradient(to bottom, rgba(255,255,255,1), rgba(255,255,255,0));
 }
 .card--ghost:after {
   bottom: -1px;
-  background: linear-gradient(to top, rgba(255,255,255,0.95), rgba(255,255,255,0));
+  background: linear-gradient(to top, rgba(255,255,255,1), rgba(255,255,255,0));
 }
 
 .contact { text-align: center; padding: 50px 0 10px; }

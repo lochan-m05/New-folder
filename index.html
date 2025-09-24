@@ -18,7 +18,7 @@
         <ul class="nav__list">
           <li><a href="#home" class="nav__link is-active">home</a></li>
           <li><a href="#projects" class="nav__link">projects</a></li>
-          <li><a href="#contact" class="nav__link">contact</a></li>
+          <li><a href="contact.html" class="nav__link">contact</a></li>
         </ul>
       </nav>
     </header>
@@ -59,14 +59,7 @@
         <p id="repo-help" class="intro" style="text-align:center">Loading repositories…</p>
       </section>
 
-      <section id="contact" class="contact" aria-labelledby="contact-title">
-        <img class="contact__image" src="https://placehold.co/420x320/png" alt="Fun graphic" width="420" height="320" />
-        <h2 id="contact-title" class="contact__title">Don't be a stranger give a wave and say hi! 👋</h2>
-        <ul class="socials" aria-label="Social links">
-          <li><a class="socials__link" href="https://github.com/" target="_blank" rel="noopener" aria-label="GitHub"><svg class="icon"><use href="assets/icons.svg#github"></use></svg></a></li>
-          <li><a class="socials__link" href="https://www.linkedin.com/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg class="icon"><use href="assets/icons.svg#linkedin"></use></svg></a></li>
-        </ul>
-      </section>
+      
     </main>
 
     <footer class="site-footer">
@@ -75,7 +68,7 @@
 
     <script>
       document.getElementById('year').textContent = new Date().getFullYear();
-      const links = document.querySelectorAll('.nav__link');
+      const links = document.querySelectorAll('.nav__link[href^="#"]');
       function updateActive() {
         links.forEach(l => l.classList.remove('is-active'));
         const hash = location.hash || '#home';
@@ -90,7 +83,12 @@
         const all = [];
         let page = 1;
         while (true) {
-          const res = await fetch(`https://api.github.com/users/${username}/repos?per_page=100&page=${page}`);
+          const res = await fetch(`https://api.github.com/users/${username}/repos?per_page=100&page=${page}`, {
+            headers: {
+              'Accept': 'application/vnd.github+json',
+              'X-GitHub-Api-Version': '2022-11-28'
+            }
+          });
           if (!res.ok) throw new Error('GitHub API error');
           const data = await res.json();
           all.push(...data);
@@ -132,7 +130,19 @@
         const section = document.getElementById('projects');
         const username = section.getAttribute('data-github-username') || 'octocat';
         try {
-          const repos = await fetchAllRepos(username);
+          const cacheKey = `gh-repos-${username}`;
+          const cacheTsKey = `${cacheKey}-ts`;
+          const now = Date.now();
+          const cached = localStorage.getItem(cacheKey);
+          const cachedTs = Number(localStorage.getItem(cacheTsKey) || 0);
+          let repos;
+          if (cached && now - cachedTs < 10 * 60 * 1000) {
+            repos = JSON.parse(cached);
+          } else {
+            repos = await fetchAllRepos(username);
+            localStorage.setItem(cacheKey, JSON.stringify(repos));
+            localStorage.setItem(cacheTsKey, String(now));
+          }
           renderRepos(repos);
           // Ghost cards for remaining repos: show names faded with top/bottom gradient
           const hidden = repos
@@ -151,7 +161,7 @@
           });
           document.getElementById('repo-help').textContent = '';
         } catch (e) {
-          document.getElementById('repo-help').textContent = 'Failed to load repositories. Try again later.';
+          document.getElementById('repo-help').innerHTML = `Failed to load repositories. See all on <a href="https://github.com/${username}?tab=repositories" target="_blank" rel="noopener">GitHub</a>.`;
         }
       })();
     </script>
