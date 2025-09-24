@@ -120,9 +120,13 @@
             const article = document.createElement('article');
             article.className = 'card';
             article.innerHTML = `
-              <h3 class="card__title"><a href="${repo.html_url}" target="_blank" rel="noopener">${repo.name}</a></h3>
+              <h3 class="card__title">${repo.name}</h3>
               <p class="card__desc">${repo.description ? repo.description : 'No description provided.'}</p>
-              <div class="card__meta"><span>${repo.language || '—'}</span><span>Updated ${formatDate(repo.updated_at)}</span></div>
+              <div class="card__meta">
+                <span>${repo.language || '—'}</span>
+                <span>Updated ${formatDate(repo.updated_at)}</span>
+                <a class="card__gh" href="${repo.html_url}" target="_blank" rel="noopener" aria-label="Open on GitHub"><svg class="icon"><use href="assets/icons.svg#github"></use></svg></a>
+              </div>
             `;
             grid.appendChild(article);
           });

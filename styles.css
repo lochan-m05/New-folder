@@ -57,9 +57,11 @@ body {
 
 .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 18px; }
 .card { grid-column: span 6; background: var(--card); border: 1px solid var(--ring); border-radius: 12px; padding: 18px; box-shadow: 0 6px 20px var(--ring); }
-.card__title { margin: 0 0 8px; font-weight: 800; letter-spacing: -0.01em; }
+.card__title { margin: 0 0 8px; font-weight: 800; letter-spacing: -0.01em; color: var(--accent); }
 .card__desc { margin: 0 0 12px; color: var(--muted); }
-.card__meta { display: flex; gap: 12px; color: var(--muted); font-size: 14px; }
+.card__meta { display: flex; gap: 12px; color: var(--muted); font-size: 14px; align-items: center; justify-content: space-between; }
+.card__meta .card__gh { margin-left: auto; color: var(--accent); opacity: .85; }
+.card__meta .card__gh:hover { opacity: 1; }
 
 @media (min-width: 980px) { .card { grid-column: span 4; } }
 
